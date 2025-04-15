@@ -1,0 +1,14 @@
+     1                                  ; VU COAL CH # 4 Q: 3 (Alternate Solution # 2)
+     2                                  
+     3                                  [org 0x0100]
+     4                                  
+     5 00000000 E90000                      jmp start
+     6                                  
+     7                                      start:
+     8 00000003 B8CDAB                          mov ax, 0xabcd
+     9 00000006 C0C804                          ror al, 4                            ; Both rotate left or rotate right can be used
+    10 00000009 C0C404                          rol ah, 4
+    11                                  
+    12                                      end:
+    13 0000000C B8004C                          mov ax, 4c00h
+    14 0000000F CD21                            int 21h

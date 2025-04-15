@@ -1,0 +1,66 @@
+     1                                  ; VU COAL CH # 4 Q: 1
+     2                                  
+     3                                  [org 0x0100]
+     4                                  
+     5 00000000 E90400                      jmp start
+     6                                  
+     7 00000003 00000000                    _bits: dw 0, 0
+     8                                  
+     9                                      start:
+    10 00000007 B891A8                          mov ax, 0xA891
+    11 0000000A B90000                          mov cx, 0
+    12 0000000D BB0080                          mov bx, 1000000000000000b          ; Mask to test a particular bit
+    13 00000010 BA00C0                          mov dx, 1100000000000000b          ; Mask used to take xor of the two different bits which will swap them 
+    14 00000013 BE0000                          mov si, 0
+    15 00000016 BF0000                          mov di, 0
+    16                                  
+    17                                          loop1: 
+    18 00000019 81FB0000                            cmp bx, 0
+    19 0000001D 7440                                jz end
+    20                                  
+    21 0000001F 85D8                                test ax, bx
+    22 00000021 7419                                jz save0
+    23 00000023 750B                                jnz save1
+    24                                  
+    25                                  
+    26                                          l1:
+    27 00000025 D1EB                                shr bx, 1                       ; Shift the mask one bit to the right to test the next bit
+    28 00000027 41                                  inc cx                          ; After two bits are tested then swap them.
+    29 00000028 81F90200                            cmp cx, 2
+    30 0000002C 741A                                jz swap
+    31 0000002E 75E9                                jnz loop1
+    32                                  
+    33                                  
+    34                                          save1:
+    35 00000030 C784[0300]0100                      mov word [_bits + si], 1
+    36                                  
+    37 00000036 81C60200                            add si, 2
+    38 0000003A EBE9                                jmp l1
+    39                                  
+    40                                  
+    41                                          save0:
+    42 0000003C C784[0300]0000                      mov word [_bits + si], 0
+    43                                  
+    44 00000042 81C60200                            add si, 2
+    45 00000046 EBDD                                jmp l1
+    46                                  
+    47                                  
+    48                                          swap: 
+    49 00000048 BE0000                              mov si, 0
+    50 0000004B B90000                              mov cx, 0
+    51                                  
+    52 0000004E 8B3E[0500]                          mov di, [_bits + 2]
+    53 00000052 393E[0300]                          cmp [_bits], di
+    54 00000056 7402                                jz l2                           ; if the bits are same then do nothing
+    55                                  
+    56 00000058 31D0                                xor ax, dx                      ; otherwise swap those bits
+    57                                  
+    58                                  
+    59                                          l2:
+    60 0000005A C1EA02                              shr dx, 2                       ; shift the mask two bits to the right for the next two bits
+    61 0000005D EBBA                                jmp loop1
+    62                                  
+    63                                  
+    64                                          end: 
+    65 0000005F B8004C                              mov ax, 0x4c00
+    66 00000062 CD21                                int 0x21

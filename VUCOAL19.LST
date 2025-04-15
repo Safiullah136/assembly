@@ -1,0 +1,68 @@
+     1                                  [org 0x0100]
+     2                                  
+     3 00000000 E94C00                      jmp start
+     4                                  
+     5                                      fib:
+     6 00000003 55                              push bp
+     7 00000004 89E5                            mov bp, sp
+     8 00000006 81EC0200                        sub sp, 2
+     9                                  
+    10 0000000A 53                              push bx 
+    11 0000000B 52                              push dx
+    12                                  
+    13 0000000C 8B5E04                          mov bx, [bp + 4]
+    14                                  
+    15 0000000F 81FB0000                        cmp bx, 0
+    16 00000013 7508                            jne notzero
+    17                                          
+    18 00000015 C746060000                      mov word [bp + 6], 0
+    19 0000001A E92A00                          jmp return
+    20                                  
+    21                                          notzero:       
+    22 0000001D 81FB0100                            cmp bx, 1
+    23 00000021 7508                                jne calls
+    24                                  
+    25 00000023 C746060100                          mov word [bp + 6], 1                
+    26 00000028 E91C00                              jmp return
+    27                                  
+    28                                          calls:
+    29 0000002B 81EC0200                            sub sp, 2
+    30                                              
+    31 0000002F 4B                                  dec bx
+    32 00000030 53                                  push bx
+    33 00000031 E8CFFF                              call fib
+    34                                  
+    35 00000034 8F46FE                              pop word [bp - 2]             ;A local variable used to store the return value from the first 
+    36                                  											  ;recursive call
+    37                                  
+    38 00000037 81EC0200                            sub sp, 2
+    39                                  
+    40 0000003B 4B                                  dec bx
+    41 0000003C 53                                  push bx
+    42 0000003D E8C3FF                              call fib
+    43 00000040 5A                                  pop dx 
+    44                                              
+    45 00000041 0356FE                              add dx, [bp - 2]
+    46 00000044 895606                              mov [bp + 6], dx
+    47                                  
+    48                                  
+    49                                          return:
+    50 00000047 5A                                  pop dx
+    51 00000048 5B                                  pop bx
+    52 00000049 89EC                                mov sp, bp
+    53 0000004B 5D                                  pop bp
+    54 0000004C C20200                              ret 2
+    55                                  
+    56                                      start:
+    57 0000004F 81EC0200                        sub sp, 2
+    58                                  
+    59 00000053 BB0700                          mov bx, 7
+    60 00000056 53                              push bx
+    61                                  
+    62 00000057 E8A9FF                          call fib
+    63                                  
+    64 0000005A 58                              pop ax
+    65                                  
+    66                                      end:
+    67 0000005B B8004C                          mov ax, 0x4c00
+    68 0000005E CD21                            int 21h

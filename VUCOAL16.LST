@@ -1,0 +1,53 @@
+     1                                  [org 0x0100]
+     2                                  
+     3 00000000 E92100                      jmp start
+     4                                  
+     5 00000003 010203040506070809-         buffer:			db 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
+     6 0000000C 0A0B0C0D0E0F101112-
+     7 00000015 131415161718191A1B-
+     8 0000001E 1C1D1E1F20         
+     9 00000023 60                          startingBit:	db 96
+    10                                  
+    11                                      start:
+    12 00000024 BA00FF                          mov dx, 1111111100000000b
+    13 00000027 BB0800                          mov bx, 8
+    14 0000002A B80000                          mov ax, 0
+    15 0000002D B90000                          mov cx, 0
+    16                                  
+    17 00000030 A0[2300]                        mov al, [startingBit]
+    18                                  
+    19 00000033 F6F3                            div bl
+    20                                  
+    21 00000035 BB0000                          mov bx, 0
+    22                                  
+    23 00000038 88C3                            mov bl, al
+    24 0000003A 89DE                            mov si, bx
+    25                                  
+    26 0000003C 80FC00                          cmp ah, 0
+    27 0000003F 7402                            jz state0
+    28 00000041 7507                            jnz state1
+    29                                  
+    30                                      ; Desired Byte doesn't split into two bytes
+    31                                  
+    32                                      state0:
+    33 00000043 8A84[0300]                      mov al, [buffer + si]
+    34                                  
+    35 00000047 E91600                          jmp end
+    36                                  
+    37                                      ; Desired Byte splits into two bytes 
+    38                                  
+    39                                      state1:
+    40 0000004A 88E1                            mov cl, ah 
+    41 0000004C 8ABC[0300]                      mov bh, [buffer + si]               ; Done to maintain the order of bytes in bx
+    42 00000050 8A9C[0400]                      mov bl, [buffer + si + 1]
+    43 00000054 D3E3                            shl bx, cl
+    44                                  
+    45 00000056 21DA                            and dx, bx
+    46                                  
+    47 00000058 B80000                          mov ax, 0
+    48 0000005B 88F0                            mov al, dh
+    49 0000005D E90000                          jmp end
+    50                                  
+    51                                      end:
+    52 00000060 B8004C                          mov ax, 0x4c00
+    53 00000063 CD21                            int 21h

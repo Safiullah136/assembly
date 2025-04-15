@@ -1,0 +1,65 @@
+     1                                  [org 0x0100]
+     2                                  
+     3 00000000 E93100                      jmp start
+     4                                  
+     5                                      fib:
+     6 00000003 55                              push bp
+     7 00000004 89E5                            mov bp, sp
+     8 00000006 51                              push cx
+     9 00000007 53                              push bx
+    10 00000008 50                              push ax
+    11                                  
+    12 00000009 B80000                          mov ax, 0
+    13 0000000C B90100                          mov cx, 1
+    14 0000000F 8B5E04                          mov bx, [bp + 4]
+    15                                  
+    16                                          zero:
+    17 00000012 81FB0000                            cmp bx, 0
+    18 00000016 7506                                jne loop1
+    19 00000018 B90000                              mov cx, 0
+    20 0000001B E90C00                              jmp return
+    21                                  
+    22                                          loop1:
+    23 0000001E 4B                                  dec bx
+    24 0000001F 81FB0000                            cmp bx, 0
+    25 00000023 7405                                je return
+    26                                  
+    27 00000025 91                                  xchg ax, cx
+    28 00000026 01C1                                add cx, ax
+    29 00000028 EBF4                                jmp loop1
+    30                                  
+    31                                      return:
+    32 0000002A 894E06                          mov [bp + 6], cx
+    33 0000002D 58                              pop ax
+    34 0000002E 5B                              pop bx
+    35 0000002F 59                              pop cx
+    36 00000030 5D                              pop bp
+    37 00000031 C20200                          ret 2
+    38                                  
+    39                                  
+    40                                      start:
+    41 00000034 81EC0200                        sub sp, 2
+    42                                  
+    43 00000038 BB0000                          mov bx, 0
+    44 0000003B 53                              push bx
+    45                                  
+    46 0000003C E8C4FF                          call fib
+    47                                  
+    48 0000003F 58                              pop ax
+    49                                  
+    50                                      end:
+    51 00000040 B8004C                          mov ax, 0x4c00
+    52 00000043 CD21                            int 21h
+    53                                  
+    54                                  
+    55                                  
+    56                                  ; def fib(n):
+    57                                  ;     if n == 0:
+    58                                  ;         return 0
+    59                                  
+    60                                  ;     a, b = 0, 1
+    61                                  
+    62                                  ;     for i in range(n - 1):
+    63                                  ;         a, b = b, a + b
+    64                                  
+    65                                  ;     return b

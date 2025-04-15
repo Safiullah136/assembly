@@ -1,0 +1,17 @@
+[org 0x0100]
+
+mov ax, [0x1901]
+mov bx, [0x1B01]
+add ax, bx
+
+mov [0x1D01], ax
+
+add ax, [0x1D01]
+add [0x1D01], ax
+
+mov ax, 0x4c00
+int 0x21
+
+
+dw 0x0005, 0x0007
+result: dw 0

@@ -1,0 +1,41 @@
+     1                                  ; VU COAL CH # 4 Q: 8
+     2                                  
+     3                                  [org 0x0100]
+     4                                  
+     5 00000000 E90000                      jmp start
+     6                                  
+     7                                      start:
+     8 00000003 B8CDAB                          mov ax, 0xabcd
+     9 00000006 BB0000                          mov bx, 0
+    10                                  
+    11                                      init:
+    12 00000009 BA0100                          mov dx, 1
+    13 0000000C BE0000                          mov si, 0
+    14                                  
+    15                                      ; Counting the no. of one bits in ax
+    16                                  
+    17                                      count:
+    18 0000000F 81FA0000                        cmp dx, 0
+    19 00000013 7409                            jz store
+    20                                  
+    21 00000015 85D0                            test ax, dx 
+    22 00000017 7401                            jz skip
+    23                                  
+    24 00000019 46                              inc si
+    25                                  
+    26                                      skip:
+    27 0000001A D1E2                            shl dx, 1
+    28 0000001C EBF1                            jmp count
+    29                                  
+    30                                      store:
+    31 0000001E 43                              inc bx
+    32 0000001F 89F0                            mov ax, si
+    33 00000021 3D0100                          cmp ax, 1           ; It is mentioned in the question that ax will always have a non zero value.
+    34                                  							; Thats why the comparision with 0 is ommitted.
+    35                                  
+    36 00000024 75E3                            jnz init
+    37                                  
+    38                                      end:
+    39 00000026 B8004C                          mov ax, 0x4c00
+    40 00000029 CD21                            int 21h
+    41                                  

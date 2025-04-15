@@ -1,0 +1,42 @@
+     1                                  
+     2                                  ; in modern OSs, programs do not start executing
+     3                                  ; "from the first instruction"
+     4                                  
+     5                                  ; instead, there is a library (ld.so) that looks for the "start symbol"
+     6                                  ; and executes from there
+     7                                  
+     8                                  ; a 'section' directive marks the parts of a program
+     9                                  ; for the ELF format (or whatever binary format you are using)
+    10                                  
+    11                                  
+    12                                  
+    13                                  SECTION .text
+    14                                  
+    15                                  ; We mark the start for this library using the following:
+    16                                  GLOBAL _start
+    17                                  
+    18                                  _start:
+    19                                      ; write the string to console
+    20 00000000 B804000000                  mov eax, 0x4                   ; write syscall is 0x4
+    21 00000005 BB01000000                  mov ebx, 1                     ; parameter - std output should be used     Other option: File Output.
+    22 0000000A B9[00000000]                mov ecx, message               ; the string to write
+    23 0000000F BA08000000                  mov edx, message_length        ; the length of the string
+    24 00000014 CD80                        int 0x80                        ; invoke the system call
+    25                                  
+    26                                      ; exit the program
+    27 00000016 B801000000                  mov eax, 0x1                   ; exit system call is 0x0
+    28 0000001B BB00000000                  mov ebx, 0                     ; exit code is 0 (return 0)
+    29 00000020 CD80                        int 0x80                        ; 
+    30                                  
+    31                                  
+    32                                  
+    33                                  ; data section here. We can also move it above .code
+    34                                  SECTION .data:
+    35                                      ; 0xA is new line, 0x0 is null terminator 
+    36 00000000 48656C6C6F210A00            message: db "Hello!", 0xA, 0x0
+    37                                      message_length: equ $-message
+    38                                  
+    39                                      ; message_length: equ 8 
+    40                                  	; .... is exactly the same as 
+    41                                  	; #define message_length 8 
+    42                                  

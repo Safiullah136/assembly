@@ -1,0 +1,33 @@
+     1                                  ; VU COAL CH # 3 Q: 6
+     2                                  
+     3                                  [org 0x0100]
+     4                                  
+     5 00000000 E90200                  jmp begin
+     6                                  
+     7 00000003 0000                    data: dw 0
+     8                                  
+     9                                  begin:
+    10 00000005 B90200                      mov cx, 2
+    11 00000008 B80100                      mov ax, 1
+    12                                  
+    13 0000000B 813E[0300]0100              cmp word [data], 1
+    14 00000011 761A                        jbe end
+    15                                  
+    16                                      fact:
+    17 00000013 89C2                            mov dx, ax 
+    18 00000015 89CB                            mov bx, cx
+    19                                  
+    20                                          innerloop:
+    21 00000017 01D0                                add ax, dx
+    22                                  
+    23 00000019 81EB0100                            sub bx, 1
+    24 0000001D 81FB0100                            cmp bx, 1
+    25 00000021 77F4                                ja innerloop
+    26                                  
+    27 00000023 81C10100                        add cx, 1
+    28 00000027 3B0E[0300]                      cmp cx, [data]
+    29 0000002B 76E6                            jbe fact
+    30                                  
+    31                                      end:
+    32 0000002D B8004C                          mov ax, 0x4c00 
+    33 00000030 CD21                            int 0x21
